@@ -1,7 +1,7 @@
 const activeGames = require('./state');
 const kamus = require('../data/kamus.json');
 const { startTurnTimer } = require('./handlers');
-const { Markup } = require('telegraf'); // WAJIB DITAMBAHKAN
+const { Markup } = require('telegraf'); 
 
 // Fungsi pembuat jeda (delay) untuk animasi
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -37,9 +37,9 @@ const startGame = async (ctx, groupId) => {
     // 3. Inisruktur Siklus & Anti-Duplikasi
     game.turnIndex = 0; 
     game.scores = {}; 
-    game.answeredWords = []; // Menyimpan kata yang sudah ditebak agar tidak bisa dipakai lagi
-    game.letterRoundCount = 1; // Hitungan putaran untuk 1 huruf (max 3 putaran)
-    game.themeLetterCount = 1; // Hitungan total huruf untuk 1 tema (max 3 huruf)
+    game.answeredWords = []; 
+    game.letterRoundCount = 1; 
+    game.themeLetterCount = 1; 
 
     const currentPlayer = game.players[game.turnIndex];
 
@@ -50,10 +50,16 @@ const startGame = async (ctx, groupId) => {
 
         await delay(1000); // Jeda 1 detik
 
+        // CEK KEAMANAN 1: Batalin animasi kalau game keburu di-stop admin
+        if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
+
         // ANIMASI FRAME 2: Tema muncul
         await ctx.telegram.editMessageText(groupId, loadingMsg.message_id, undefined, `🎲 Tema Terpilih: *${game.currentTheme}*!\n🔤 Mengacak huruf...`, { parse_mode: 'Markdown' });
 
         await delay(1000); // Jeda 1 detik
+
+        // CEK KEAMANAN 2: Batalin animasi kalau game keburu di-stop admin
+        if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
 
         // ANIMASI FRAME 3: Hasil Akhir + Tombol Skip
         const finalPesan = `Sebutkan *${game.currentTheme}* yang berawalan dari huruf *${game.currentLetter}*!\n\n(Putaran: ${game.letterRoundCount}/3)\n\nGiliran menjawab: [${currentPlayer.name}](tg://user?id=${currentPlayer.id})\n\n⏳ Waktu kamu 60 detik! *Reply* pesan ini dengan jawabanmu.`;
@@ -69,8 +75,10 @@ const startGame = async (ctx, groupId) => {
 
     } catch (error) {
         console.error("Gagal menjalankan animasi pesan:", error);
-        // Fallback jika terjadi error (misal pesan terhapus di tengah animasi)
-        startTurnTimer(ctx, groupId); 
+        // Pastikan timer tidak berjalan kalau error / room sudah dihapus
+        if (activeGames.has(groupId) && activeGames.get(groupId).status === 'PLAYING') {
+            startTurnTimer(ctx, groupId); 
+        }
     }
 };
 
