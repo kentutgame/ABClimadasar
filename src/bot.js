@@ -11,7 +11,7 @@ const settingCommand = require('./commands/setting');
 const daftarGrupCommand = require('./commands/daftarGrup');
 const settingGrupCommand = require('./commands/settingGrup');
 const abcLimaDasarCommand = require('./commands/abcLimaDasar');
-const { joinGameAction } = require('./actions/gameActions');
+
 const mulaiSekarangCommand = require('./commands/mulaiSekarang');
 const { handleGameMessage } = require('./game/messageListener');
 const tambahWaktuCommand = require('./commands/tambahWaktu');
