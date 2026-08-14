@@ -16,14 +16,17 @@ const shuffleArray = (array) => {
 const nextTurn = async (ctx, groupId, game) => {
     if (game.turnTimer) clearTimeout(game.turnTimer);
 
-    // Pindah ke player selanjutnya
     game.turnIndex++;
+    
+    // Penanda apakah kita perlu menyalakan animasi acak atau tidak
+    let isThemeOrLetterChanged = false;
 
     if (game.turnIndex >= game.players.length) {
         game.turnIndex = 0;
         game.letterRoundCount++; 
 
         if (game.letterRoundCount > 3) {
+            isThemeOrLetterChanged = true; // Huruf habis, wajib animasi acak
             game.letterRoundCount = 1;
             game.themeLetterCount++; 
 
@@ -39,40 +42,47 @@ const nextTurn = async (ctx, groupId, game) => {
                 const hurufTersedia = [...new Set(kataTersedia.map(kata => kata.charAt(0).toUpperCase()))];
                 game.availableLetters = shuffleArray(hurufTersedia);
                 game.themeLetterCount = 1;
-
-                await ctx.telegram.sendMessage(groupId, `🔄 *TEMA BERGANTI!*\nTema baru sekarang adalah: *${game.currentTheme}*`, { parse_mode: 'Markdown' });
             }
 
             game.currentLetter = game.availableLetters.pop();
-            await ctx.telegram.sendMessage(groupId, `🔤 *HURUF BERGANTI!*\nHuruf depan sekarang adalah: *${game.currentLetter}* *(Huruf ke-${game.themeLetterCount} dari 3)*`, { parse_mode: 'Markdown' });
         }
     }
 
     const currentPlayer = game.players[game.turnIndex];
 
     try {
-        const loadingMsg = await ctx.telegram.sendMessage(groupId, "🎲 *Mengacak Tema & Huruf...*", { parse_mode: 'Markdown' });
-        game.lastQuestionMessageId = loadingMsg.message_id;
+        let messageIdToEdit;
 
-        await delay(1000); 
-        
-        // CEK KEAMANAN 1
-        if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
+        // JIKA HURUF/TEMA GANTI: Mainkan Animasi Slot Machine
+        if (isThemeOrLetterChanged) {
+            const loadingMsg = await ctx.telegram.sendMessage(groupId, "🎲 *Mengacak Tema & Huruf Baru...*", { parse_mode: 'Markdown' });
+            messageIdToEdit = loadingMsg.message_id;
+            game.lastQuestionMessageId = messageIdToEdit;
 
-        await ctx.telegram.editMessageText(groupId, loadingMsg.message_id, undefined, `🎲 Tema Terpilih: *${game.currentTheme}*!\n🔤 Mengacak huruf...`, { parse_mode: 'Markdown' });
+            await delay(1000); 
+            if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
 
-        await delay(1000); 
+            await ctx.telegram.editMessageText(groupId, messageIdToEdit, undefined, `🎲 Tema Terpilih: *${game.currentTheme}*!\n🔤 Mengacak huruf...`, { parse_mode: 'Markdown' });
 
-        // CEK KEAMANAN 2
-        if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
+            await delay(1000); 
+            if (!activeGames.has(groupId) || activeGames.get(groupId).status !== 'PLAYING') return;
+        }
 
-        const finalPesan = `Sebutkan *${game.currentTheme}* yang berawalan dari huruf *${game.currentLetter}*!\n\n(Putaran: ${game.letterRoundCount}/3)\n\nGiliran menjawab: [${currentPlayer.name}](tg://user?id=${currentPlayer.id})\n\n⏳ Waktu kamu 60 detik! *Reply* pesan ini dengan jawabanmu.`;
+        // Teks awalan berbeda tergantung ada animasi atau tidak
+        const headerText = isThemeOrLetterChanged ? "" : "🔄 *Giliran Berpindah!*\n\n";
+        const finalPesan = `${headerText}Sebutkan *${game.currentTheme}* yang berawalan dari huruf *${game.currentLetter}*!\n\n(Putaran: ${game.letterRoundCount}/3)\n\nGiliran menjawab: [${currentPlayer.name}](tg://user?id=${currentPlayer.id})\n\n⏳ Waktu kamu 60 detik! *Reply* pesan ini dengan jawabanmu.`;
 
         const tombolSkip = Markup.inlineKeyboard([
             [Markup.button.callback('⏭️ Gua Skip', `skip_${groupId}`)]
         ]);
 
-        await ctx.telegram.editMessageText(groupId, loadingMsg.message_id, undefined, finalPesan, { parse_mode: 'Markdown', ...tombolSkip });
+        // Kalau tadi pakai animasi, kita edit pesannya. Kalau tidak, kirim pesan baru.
+        if (isThemeOrLetterChanged) {
+            await ctx.telegram.editMessageText(groupId, messageIdToEdit, undefined, finalPesan, { parse_mode: 'Markdown', ...tombolSkip });
+        } else {
+            const sentMsg = await ctx.telegram.sendMessage(groupId, finalPesan, { parse_mode: 'Markdown', ...tombolSkip });
+            game.lastQuestionMessageId = sentMsg.message_id;
+        }
 
         startTurnTimer(ctx, groupId);
 
@@ -90,7 +100,6 @@ const startTurnTimer = (ctx, groupId) => {
 
     game.turnTimer = setTimeout(async () => {
         const currentGame = activeGames.get(groupId);
-        // Cegah eksekusi jika game sudah hilang atau dihentikan
         if (!currentGame || currentGame.status !== 'PLAYING') return;
 
         const currentP = currentGame.players[currentGame.turnIndex];
@@ -99,6 +108,5 @@ const startTurnTimer = (ctx, groupId) => {
         await nextTurn(ctx, groupId, currentGame);
     }, 60000); 
 };
-
 
 module.exports = { nextTurn, startTurnTimer };
