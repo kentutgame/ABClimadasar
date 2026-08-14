@@ -38,4 +38,34 @@ const joinGameAction = async (ctx) => {
     }
 };
 
-module.exports = { joinGameAction };
+const skipTurnAction = async (ctx) => {
+    const groupId = Number(ctx.match[1]);
+    const game = activeGames.get(groupId);
+
+    if (!game || game.status !== 'PLAYING') {
+        return ctx.answerCbQuery('Game sudah tidak aktif!', { show_alert: true });
+    }
+
+    const currentPlayer = game.players[game.turnIndex];
+
+    // Validasi: Hanya orang yang sedang giliran yang boleh menekan tombol skip
+    if (ctx.from.id !== currentPlayer.id) {
+        return ctx.answerCbQuery('Eits, bukan giliranmu buat nge-skip!', { show_alert: true });
+    }
+
+    // Hentikan timer pemain saat ini
+    clearTimeout(game.turnTimer);
+
+    // Hilangkan loading di tombol
+    await ctx.answerCbQuery('Kamu melewati giliranmu!');
+    
+    // Beri tahu grup kalau dia nyerah
+    await ctx.telegram.sendMessage(groupId, `⏭️ [${currentPlayer.name}](tg://user?id=${currentPlayer.id}) menyerah dan melewati gilirannya!`, { parse_mode: 'Markdown' });
+
+    // Panggil nextTurn untuk melempar giliran ke pemain selanjutnya
+    const { nextTurn } = require('../game/handlers');
+    await nextTurn(ctx, groupId, game);
+};
+
+// Tambahkan skipTurnAction di export module
+module.exports = { joinGameAction, skipTurnAction };

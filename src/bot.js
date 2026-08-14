@@ -21,7 +21,7 @@ const stopGameCommand = require('./commands/stopGame');
 const { listGrupAction, detailGrupAction } = require('./actions/groupMenu');
 const toggleAdminAction = require('./actions/toggleAdmin');
 const { detailSetGrupAction, togglePlayCustomAction } = require('./actions/settingGrupMenu');
-
+const { joinGameAction, skipTurnAction } = require('./actions/gameActions');
 
 const bot = new Telegraf(BOT_TOKEN);
 
@@ -56,6 +56,8 @@ bot.action('action_daftar_grup', async (ctx) => {
     await ctx.answerCbQuery();
     await ctx.reply('Untuk mendaftarkan grup baru, silakan ketik perintah berikut:\n\n`/daftargrup <ID_GRUP>`\n\nContoh: `/daftargrup -100987654321`', { parse_mode: 'Markdown' });
 });
+// Daftarkan aksi tombol skip
+bot.action(/^skip_(.+)$/, skipTurnAction);
 
 // Aksi Menu B (List Grup & Ceklis Admin)
 bot.action('action_list_grup', listGrupAction);
