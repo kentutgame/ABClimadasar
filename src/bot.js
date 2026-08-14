@@ -45,6 +45,23 @@ bot.command('tambahwaktu', tambahWaktuCommand);
 // Command untuk menghentikan paksa game yang sedang berjalan
 bot.command('stopgame', stopGameCommand);
 
+
+// Command untuk cek ping/latensi
+bot.command('ping', (ctx) => {
+    const start = Date.now();
+    ctx.reply('🏓 Sedang mengecek ping...').then((sentMessage) => {
+        const end = Date.now();
+        const ping = end - start;
+        ctx.telegram.editMessageText(
+            ctx.chat.id, 
+            sentMessage.message_id, 
+            undefined, 
+            `🏓 *Pong!*\nLatensi Vercel ↔️ Telegram: *${ping}ms*`,
+            { parse_mode: 'Markdown' }
+        );
+    });
+});
+
 // Listener untuk menangkap teks jawaban di grup (harus di bawah sebelum bot.launch)
 bot.on('text', handleGameMessage);
 
