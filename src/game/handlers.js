@@ -1,5 +1,9 @@
 const activeGames = require('./state');
 const kamus = require('../data/kamus.json');
+const { Markup } = require('telegraf'); // <-- WAJIB UNTUK TOMBOL SKIP
+
+// Fungsi pembuat jeda (delay) untuk animasi
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Fungsi pembantu untuk mengacak array
 const shuffleArray = (array) => {
@@ -54,12 +58,37 @@ const nextTurn = async (ctx, groupId, game) => {
 
     const currentPlayer = game.players[game.turnIndex];
 
-    const pesan = `🔄 *Giliran Berpindah!*\n\nTema: *${game.currentTheme}*\nHuruf Depan: *${game.currentLetter}* | Putaran: *${game.letterRoundCount}/3*\n\nGiliran menjawab: [${currentPlayer.name}](tg://user?id=${currentPlayer.id})\n\n⏳ Waktu kamu 60 detik! *Reply* pesan ini dengan jawabanmu.`;
+    // --- BAGIAN YANG DIUBAH: MENAMBAHKAN ANIMASI & TOMBOL SKIP ---
+    try {
+        // ANIMASI FRAME 1: Mengacak
+        const loadingMsg = await ctx.telegram.sendMessage(groupId, "🎲 *Mengacak Tema & Huruf...*", { parse_mode: 'Markdown' });
+        game.lastQuestionMessageId = loadingMsg.message_id;
 
-    const sentMessage = await ctx.telegram.sendMessage(groupId, pesan, { parse_mode: 'Markdown' });
-    game.lastQuestionMessageId = sentMessage.message_id;
+        await delay(1000); // Jeda 1 detik
 
-    startTurnTimer(ctx, groupId);
+        // ANIMASI FRAME 2: Tema muncul
+        await ctx.telegram.editMessageText(groupId, loadingMsg.message_id, undefined, `🎲 Tema Terpilih: *${game.currentTheme}*!\n🔤 Mengacak huruf...`, { parse_mode: 'Markdown' });
+
+        await delay(1000); // Jeda 1 detik
+
+        // ANIMASI FRAME 3: Hasil Akhir + Tombol Skip
+        const finalPesan = `Sebutkan *${game.currentTheme}* yang berawalan dari huruf *${game.currentLetter}*!\n\n(Putaran: ${game.letterRoundCount}/3)\n\nGiliran menjawab: [${currentPlayer.name}](tg://user?id=${currentPlayer.id})\n\n⏳ Waktu kamu 60 detik! *Reply* pesan ini dengan jawabanmu.`;
+
+        // Membuat tombol Skip
+        const tombolSkip = Markup.inlineKeyboard([
+            [Markup.button.callback('⏭️ Gua Skip', `skip_${groupId}`)]
+        ]);
+
+        await ctx.telegram.editMessageText(groupId, loadingMsg.message_id, undefined, finalPesan, { parse_mode: 'Markdown', ...tombolSkip });
+
+        // Mulai timer setelah animasi selesai
+        startTurnTimer(ctx, groupId);
+
+    } catch (error) {
+        console.error("Gagal menjalankan animasi pesan:", error);
+        // Fallback jika edit gagal
+        startTurnTimer(ctx, groupId); 
+    }
 };
 
 const startTurnTimer = (ctx, groupId) => {
@@ -77,4 +106,5 @@ const startTurnTimer = (ctx, groupId) => {
     }, 60000); 
 };
 
-module.exports = { nextTrain: nextTurn, nextTurn, startTurnTimer };
+// Typo 'nextTrain' sudah saya hapus agar lebih rapi
+module.exports = { nextTurn, startTurnTimer };
