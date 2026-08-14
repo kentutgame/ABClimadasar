@@ -94,6 +94,23 @@ bot.on('my_chat_member', async (ctx) => {
 
 // ================= ERROR HANDLING & LAUNCH =================
 // Menyalakan bot secara lokal
+// if (process.env.NODE_ENV !== 'production') {
+//     bot.launch().then(() => console.log('🚀 Bot sedang berjalan secara lokal... Silakan uji coba!'));
+// }
+
+// // Mencegah error crash yang tidak terduga
+// bot.catch((err, ctx) => {
+//     console.error(`Error pada ${ctx.updateType}:`, err);
+// });
+
+// // Mematikan bot dengan aman jika terminal ditutup
+// process.once('SIGINT', () => bot.stop('SIGINT'));
+// process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
+// module.exports = bot;
+
+// ================= ERROR HANDLING & LAUNCH =================
+// Menyalakan bot secara lokal HANYA jika bukan di Vercel/Production
 if (process.env.NODE_ENV !== 'production') {
     bot.launch().then(() => console.log('🚀 Bot sedang berjalan secara lokal... Silakan uji coba!'));
 }
@@ -103,8 +120,9 @@ bot.catch((err, ctx) => {
     console.error(`Error pada ${ctx.updateType}:`, err);
 });
 
-// Mematikan bot dengan aman jika terminal ditutup
+// Mematikan bot dengan aman jika terminal ditutup (untuk lokal)
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
 
+// WAJIB ADA: Mengekspor bot agar bisa dibaca oleh Vercel Webhook
 module.exports = bot;
