@@ -1,0 +1,26 @@
+{
+  "Negara": [
+    "afghanistan", "afrika selatan", "amerika serikat", "arab saudi", "argentina", "australia", "austria", "belanda", "belgia", "brasil", "brunei darussalam", "cina", "denmark", "filipina", "finlandia", "hungaria", "india", "indonesia", "inggris", "irak", "iran", "irlandia", "islandia", "italia", "jepang", "jerman", "kamboja", "kanada", "korea selatan", "korea utara", "laos", "malaysia", "meksiko", "mesir", "myanmar", "norwegia", "pakistan", "peru", "polandia", "portugal", "prancis", "qatar", "rusia", "selandia baru", "singapura", "spanyol", "swedia", "swiss", "thailand", "turki", "uni emirat arab", "vietnam", "yunani"
+  ],
+  "Hewan": [
+    "anjing", "ayam", "babi", "badak", "banteng", "bebek", "belalang", "beruang", "buaya", "burung", "cacing", "capung", "cheetah", "cicak", "domba", "elang", "flamingo", "gajah", "gorila", "harimau", "hiu", "ikan", "jerapah", "kadal", "kalkun", "kambing", "kangguru", "katak", "kecoa", "kelelawar", "kelinci", "kepiting", "koala", "komodo", "kucing", "kuda", "kuda nil", "kupu-kupu", "kura-kura", "laba-laba", "lalat", "landak", "lebah", "lumba-lumba", "macan tutul", "monyet", "nyamuk", "panda", "paus", "penguin", "rubah", "rusa", "sapi", "semut", "singa", "tikus", "tupai", "ular", "unta", "zebra"
+  ],
+  "Buah": [
+    "alpukat", "anggur", "apel", "aprikot", "belimbing", "blackberry", "blueberry", "ceri", "delima", "duku", "durian", "jambu air", "jambu biji", "jeruk", "jeruk bali", "jeruk nipis", "kedondong", "kelapa", "kelengkeng", "kiwi", "kurma", "leci", "lemon", "mangga", "manggis", "markisa", "melon", "naga", "nangka", "nanas", "papaya", "peach", "pir", "pisang", "plum", "rambutan", "salak", "sawo", "semangka", "sirsak", "stroberi", "tomat"
+  ],
+  "Benda dalam Rumah": [
+    "ac", "asbak", "bantal", "blender", "buku", "cermin", "dispenser", "ember", "galon", "gantungan baju", "garpu", "gayung", "gelas", "guling", "gunting", "handuk", "jam dinding", "jam weker", "karpet", "kasur", "kemoceng", "kipas angin", "komputer", "kompor", "kulkas", "kursi", "lampu", "laptop", "lemari", "mangkok", "mesin cuci", "microwave", "oven", "panci", "payung", "pel", "pigura", "piring", "pisau", "rak buku", "rak sepatu", "rice cooker", "sabun", "sampo", "sapu", "sendok", "setrika", "sikat gigi", "sisir", "sofa", "sprei", "televisi", "tempat sampah", "timbangan", "toaster", "wajan"
+  ],
+  "Brand makanan / minuman": [
+    "aqua", "bango", "baskin robbins", "beng-beng", "burger king", "cadbury", "chatime", "chitato", "coca-cola", "dancow", "danone", "dominos pizza", "doritos", "dunkin donuts", "fanta", "ferrero rocher", "haagen-dazs", "heinz", "hokben", "indomie", "j.co", "janji jiwa", "kfc", "kopi kenangan", "kopiko", "kraft", "lays", "le minerale", "luwak white koffie", "magnum", "mcdonalds", "milo", "mixue", "nestle", "nutella", "oreo", "pepsi", "pizza hut", "pocky", "pringles", "richeese factory", "sari roti", "silverqueen", "sprite", "starbucks", "subway", "taro", "teh botol sosro", "teh pucuk harum", "toblerone", "tolak angin", "torabika", "unilever", "yakult"
+  ],
+  "Brand pakaian": [
+    "adidas", "balenciaga", "bape", "bershka", "burberry", "calvin klein", "champion", "chanel", "columbia", "converse", "dior", "erigo", "fila", "gucci", "guess", "h&m", "hermes", "hugo boss", "lacoste", "levi's", "louis vuitton", "mango", "marks & spencer", "new balance", "nike", "off-white", "patagonia", "prada", "pull&bear", "puma", "ralph lauren", "reebok", "rolex", "skechers", "stradivarius", "supreme", "the north face", "timberland", "tommy hilfiger", "under armour", "uniqlo", "vans", "versace", "victoria's secret", "zara"
+  ],
+  "Brand mobil": [
+    "alfa romeo", "aston martin", "audi", "bentley", "bmw", "bugatti", "cadillac", "chevrolet", "chrysler", "citroen", "daihatsu", "datsun", "dfsk", "dodge", "ferrari", "fiat", "ford", "honda", "hyundai", "isuzu", "jaguar", "jeep", "kia", "lamborghini", "land rover", "lexus", "maserati", "mazda", "mclaren", "mercedes-benz", "mini", "mitsubishi", "nissan", "peugeot", "porsche", "renault", "rolls-royce", "subaru", "suzuki", "tesla", "toyota", "volkswagen", "volvo", "wuling"
+  ],
+  "Kota di dunia": [
+    "abu dhabi", "amsterdam", "ankara", "athena", "auckland", "baghdad", "bandung", "bangkok", "barcelona", "beijing", "berlin", "bogota", "boston", "brisbane", "brussels", "budapest", "buenos aires", "busan", "cairo", "cape town", "chicago", "dallas", "delhi", "denpasar", "dubai", "dublin", "frankfurt", "geneva", "guangzhou", "hanoi", "ho chi minh", "hong kong", "houston", "istanbul", "jakarta", "jeddah", "johannesburg", "kuala lumpur", "kyoto", "lagos", "las vegas", "lima", "lisbon", "london", "los angeles", "lyon", "macau", "madrid", "makassar", "manchester", "manila", "marseille", "medan", "melbourne", "mexico city", "miami", "milan", "montreal", "moscow", "munich", "nairobi", "naples", "new york", "osaka", "oslo", "paris", "perth", "prague", "rio de janeiro", "riyadh", "rome", "rotterdam", "saint petersburg", "san francisco", "santiago", "sao paulo", "seattle", "semarang", "seoul", "shanghai", "singapore", "stockholm", "surabaya", "sydney", "taipei", "tokyo", "toronto", "valencia", "vancouver", "vienna", "warsaw", "washington dc", "yogyakarta", "zurich"
+  ]
+}
